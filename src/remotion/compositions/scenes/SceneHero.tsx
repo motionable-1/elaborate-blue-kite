@@ -6,9 +6,11 @@ import {
   spring,
   interpolate,
   Img,
-  Easing,
 } from "remotion";
-import { FadeInWords, BlurReveal } from "../../library/components/text/TextAnimation";
+import {
+  FadeInWords,
+  BlurReveal,
+} from "../../library/components/text/TextAnimation";
 import { LogoReveal } from "../../library/components/effects/LogoReveal";
 
 const LOGO_URL =
@@ -19,12 +21,21 @@ export const SceneHero: React.FC = () => {
   const { fps } = useVideoConfig();
 
   // Logo reveal animation
-  const logoProgress = spring({ frame, fps, config: { damping: 14, stiffness: 100 } });
+  const logoProgress = spring({
+    frame,
+    fps,
+    config: { damping: 14, stiffness: 100 },
+  });
   const logoScale = interpolate(logoProgress, [0, 1], [0.6, 1]);
   const logoOpacity = interpolate(logoProgress, [0, 1], [0, 1]);
 
   // Wordmark entrance
-  const wordmarkSpring = spring({ frame, fps, delay: 12, config: { damping: 16, stiffness: 120 } });
+  const wordmarkSpring = spring({
+    frame,
+    fps,
+    delay: 12,
+    config: { damping: 16, stiffness: 120 },
+  });
   const wordmarkY = interpolate(wordmarkSpring, [0, 1], [30, 0]);
   const wordmarkOpacity = interpolate(wordmarkSpring, [0, 1], [0, 1]);
 
@@ -32,7 +43,12 @@ export const SceneHero: React.FC = () => {
   const taglineDelay = 28;
 
   // Decorative ring
-  const ringSpring = spring({ frame, fps, delay: 6, config: { damping: 20, stiffness: 80 } });
+  const ringSpring = spring({
+    frame,
+    fps,
+    delay: 6,
+    config: { damping: 20, stiffness: 80 },
+  });
   const ringScale = interpolate(ringSpring, [0, 1], [0, 1]);
   const ringOpacity = interpolate(ringSpring, [0, 1], [0, 0.15]);
   const ringRotation = frame * 0.15;
@@ -73,7 +89,8 @@ export const SceneHero: React.FC = () => {
           width: 250,
           height: 250,
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(145, 93, 255, 0.35), transparent 70%)",
+          background:
+            "radial-gradient(circle, rgba(145, 93, 255, 0.35), transparent 70%)",
           transform: `scale(${pulseScale * logoProgress})`,
           filter: "blur(40px)",
         }}
@@ -89,7 +106,12 @@ export const SceneHero: React.FC = () => {
         }}
       >
         {/* Logo Icon */}
-        <LogoReveal revealStyle="glow" glowColor="#915DFF" duration={1} glowIntensity={1.2}>
+        <LogoReveal
+          revealStyle="glow"
+          glowColor="#915DFF"
+          duration={1}
+          glowIntensity={1.2}
+        >
           <Img
             src={LOGO_URL}
             style={{
@@ -152,7 +174,10 @@ export const SceneHero: React.FC = () => {
           height: 40,
           borderLeft: "2px solid rgba(145, 93, 255, 0.25)",
           borderTop: "2px solid rgba(145, 93, 255, 0.25)",
-          opacity: interpolate(frame, [15, 30], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
+          opacity: interpolate(frame, [15, 30], [0, 1], {
+            extrapolateLeft: "clamp",
+            extrapolateRight: "clamp",
+          }),
         }}
       />
       <div
@@ -164,7 +189,10 @@ export const SceneHero: React.FC = () => {
           height: 40,
           borderRight: "2px solid rgba(145, 93, 255, 0.25)",
           borderBottom: "2px solid rgba(145, 93, 255, 0.25)",
-          opacity: interpolate(frame, [15, 30], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
+          opacity: interpolate(frame, [15, 30], [0, 1], {
+            extrapolateLeft: "clamp",
+            extrapolateRight: "clamp",
+          }),
         }}
       />
     </AbsoluteFill>

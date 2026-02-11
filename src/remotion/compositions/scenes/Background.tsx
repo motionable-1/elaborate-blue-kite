@@ -4,7 +4,6 @@ import {
   useCurrentFrame,
   useVideoConfig,
   interpolate,
-  Easing,
 } from "remotion";
 
 export const Background: React.FC = () => {
@@ -45,19 +44,20 @@ export const Background: React.FC = () => {
             linear-gradient(180deg, rgba(145, 93, 255, 0.03) 1px, transparent 1px)
           `,
           backgroundSize: "60px 60px",
-          opacity: interpolate(
-            Math.sin(time * 0.2),
-            [-1, 1],
-            [0.3, 0.6]
-          ),
+          opacity: interpolate(Math.sin(time * 0.2), [-1, 1], [0.3, 0.6]),
         }}
       />
 
       {/* Floating ambient particles */}
       {Array.from({ length: 12 }).map((_, i) => {
         const seed = i * 137.5;
-        const x = (Math.sin(seed + time * 0.2 * (0.5 + (i % 3) * 0.3)) * 0.5 + 0.5) * 100;
-        const y = (Math.cos(seed * 1.3 + time * 0.15 * (0.4 + (i % 4) * 0.2)) * 0.5 + 0.5) * 100;
+        const x =
+          (Math.sin(seed + time * 0.2 * (0.5 + (i % 3) * 0.3)) * 0.5 + 0.5) *
+          100;
+        const y =
+          (Math.cos(seed * 1.3 + time * 0.15 * (0.4 + (i % 4) * 0.2)) * 0.5 +
+            0.5) *
+          100;
         const size = 2 + (i % 4) * 1.5;
         const opacity = 0.08 + (i % 5) * 0.03 + Math.sin(time * 0.5 + i) * 0.03;
 
@@ -83,7 +83,8 @@ export const Background: React.FC = () => {
       {/* Top fade for polish */}
       <AbsoluteFill
         style={{
-          background: "linear-gradient(180deg, rgba(6,6,15,0.5) 0%, transparent 20%, transparent 80%, rgba(6,6,15,0.4) 100%)",
+          background:
+            "linear-gradient(180deg, rgba(6,6,15,0.5) 0%, transparent 20%, transparent 80%, rgba(6,6,15,0.4) 100%)",
           pointerEvents: "none",
         }}
       />

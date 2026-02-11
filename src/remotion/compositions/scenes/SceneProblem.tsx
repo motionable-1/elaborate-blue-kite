@@ -7,7 +7,7 @@ import {
   interpolate,
   Easing,
 } from "remotion";
-import { FadeInWords, FadeInChars } from "../../library/components/text/TextAnimation";
+import { FadeInChars } from "../../library/components/text/TextAnimation";
 
 const PAIN_POINTS = [
   { icon: "⏱", text: "Hours of manual keyword research" },
@@ -75,7 +75,11 @@ export const SceneProblem: React.FC = () => {
               frame,
               [strikeDelay, strikeDelay + 12],
               [0, 100],
-              { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.out(Easing.cubic) }
+              {
+                extrapolateLeft: "clamp",
+                extrapolateRight: "clamp",
+                easing: Easing.out(Easing.cubic),
+              },
             );
 
             return (

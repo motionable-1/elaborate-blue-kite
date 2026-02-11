@@ -1,56 +1,181 @@
-import { AbsoluteFill, Artifact, useCurrentFrame, useVideoConfig } from "remotion";
-import { loadFont } from "@remotion/google-fonts/SpaceMono";
+import React from "react";
+import {
+  AbsoluteFill,
+  Sequence,
+  Artifact,
+  useCurrentFrame,
+  useVideoConfig,
+  interpolate,
+} from "remotion";
+import { Audio } from "@remotion/media";
+import { TransitionSeries, linearTiming } from "@remotion/transitions";
+import { fade } from "@remotion/transitions/fade";
+import { loadFont } from "@remotion/google-fonts/Inter";
 
-const LoaderDots = () => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+import { blurDissolve } from "../library/components/layout/transitions/presentations/blurDissolve";
 
-  const dot = (index: number) => {
-    const phase = (frame / fps) * 2 * Math.PI + index * 0.8;
-    return 0.35 + Math.max(0, Math.sin(phase)) * 0.65;
-  };
+import { Background } from "./scenes/Background";
+import { SceneHero } from "./scenes/SceneHero";
+import { SceneProblem } from "./scenes/SceneProblem";
+import { SceneFeatures } from "./scenes/SceneFeatures";
+import { SceneContentEngine } from "./scenes/SceneContentEngine";
+import { ScenePublish } from "./scenes/ScenePublish";
+import { SceneGrowth } from "./scenes/SceneGrowth";
+import { SceneCTA } from "./scenes/SceneCTA";
 
-  return (
-    <span className="inline-flex gap-1">
-      {[0, 1, 2].map((i) => (
-        <span
-          key={i}
-          className="inline-block text-sky-300"
-          style={{ opacity: dot(i) }}
-        >
-          .
-        </span>
-      ))}
-    </span>
-  );
-};
+// Load Inter font globally
+loadFont("normal", {
+  weights: ["400", "500", "600", "700", "800"],
+  subsets: ["latin"],
+});
 
+// Audio URLs
+const MUSIC_URL =
+  "https://pub-e3bfc0083b0644b296a7080b21024c5f.r2.dev/music/1770819204396_9y8zmnirjrj_music_Modern_tech_startup_.mp3";
+const WHOOSH_SFX =
+  "https://pub-e3bfc0083b0644b296a7080b21024c5f.r2.dev/sfx/1770818738993_bcgdz7vin57_sfx_modern_tech_startup_video_intr.mp3";
+const CHIME_SFX =
+  "https://pub-e3bfc0083b0644b296a7080b21024c5f.r2.dev/sfx/1770818751087_ud6eof33tmp_sfx_gentle_rising_digital_chime__s.mp3";
+
+// Scene durations in frames (at 30fps)
+const SCENE_HERO = 110; // ~3.7s
+const SCENE_PROBLEM = 120; // 4s
+const SCENE_FEATURES = 120; // 4s
+const SCENE_CONTENT = 130; // ~4.3s
+const SCENE_PUBLISH = 120; // 4s
+const SCENE_GROWTH = 120; // 4s
+const SCENE_CTA = 130; // ~4.3s + buffer
+
+// Transition duration
+const T_DUR = 18; // 0.6s transition
+
+// Total = sum of scenes - (number of transitions * transition duration)
+// 7 scenes, 6 transitions: 850 - 6*18 = 742 frames ≈ 24.7s + 30 extra = 772
 export const Main: React.FC = () => {
-  const { fontFamily } = loadFont();
   const frame = useCurrentFrame();
+  const { durationInFrames } = useVideoConfig();
+
   return (
     <>
-      {/* Leave this here to generate a thumbnail */}
+      {/* Thumbnail artifact */}
       {frame === 0 && (
         <Artifact content={Artifact.Thumbnail} filename="thumbnail.jpeg" />
       )}
-      <AbsoluteFill className="flex items-center justify-center bg-[#0f1115]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(99,102,241,0.28),transparent_45%),radial-gradient(circle_at_70%_60%,rgba(16,185,129,0.2),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(180deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:48px_48px] opacity-40" />
-        <div
-          className="flex flex-col items-center gap-4 text-center text-white drop-shadow-[0_12px_32px_rgba(0,0,0,0.55)]"
-          style={{ fontFamily, fontWeight: 700, letterSpacing: "0.01em" }}
-        >
-          <div className="text-4xl md:text-5xl font-bold">
-            <span className="font-extrabold text-sky-300">TypeFrames</span> is
-            building your video
-            <LoaderDots />
-          </div>
-          <div className="text-base md:text-lg text-white/70">
-            Rendering scenes, timing transitions, and polishing frames.
-          </div>
-        </div>
+
+      {/* Persistent animated background */}
+      <AbsoluteFill>
+        <Background />
       </AbsoluteFill>
+
+      {/* Scene transitions */}
+      <AbsoluteFill>
+        <TransitionSeries>
+          {/* Scene 1: Hero / Logo Reveal */}
+          <TransitionSeries.Sequence durationInFrames={SCENE_HERO}>
+            <SceneHero />
+          </TransitionSeries.Sequence>
+
+          <TransitionSeries.Transition
+            presentation={blurDissolve()}
+            timing={linearTiming({ durationInFrames: T_DUR })}
+          />
+
+          {/* Scene 2: Problem Statement */}
+          <TransitionSeries.Sequence durationInFrames={SCENE_PROBLEM}>
+            <SceneProblem />
+          </TransitionSeries.Sequence>
+
+          <TransitionSeries.Transition
+            presentation={blurDissolve()}
+            timing={linearTiming({ durationInFrames: T_DUR })}
+          />
+
+          {/* Scene 3: Feature Showcase */}
+          <TransitionSeries.Sequence durationInFrames={SCENE_FEATURES}>
+            <SceneFeatures />
+          </TransitionSeries.Sequence>
+
+          <TransitionSeries.Transition
+            presentation={fade()}
+            timing={linearTiming({ durationInFrames: T_DUR })}
+          />
+
+          {/* Scene 4: Content Engine */}
+          <TransitionSeries.Sequence durationInFrames={SCENE_CONTENT}>
+            <SceneContentEngine />
+          </TransitionSeries.Sequence>
+
+          <TransitionSeries.Transition
+            presentation={blurDissolve()}
+            timing={linearTiming({ durationInFrames: T_DUR })}
+          />
+
+          {/* Scene 5: Publishing Integrations */}
+          <TransitionSeries.Sequence durationInFrames={SCENE_PUBLISH}>
+            <ScenePublish />
+          </TransitionSeries.Sequence>
+
+          <TransitionSeries.Transition
+            presentation={fade()}
+            timing={linearTiming({ durationInFrames: T_DUR })}
+          />
+
+          {/* Scene 6: Growth Metrics */}
+          <TransitionSeries.Sequence durationInFrames={SCENE_GROWTH}>
+            <SceneGrowth />
+          </TransitionSeries.Sequence>
+
+          <TransitionSeries.Transition
+            presentation={blurDissolve()}
+            timing={linearTiming({ durationInFrames: T_DUR })}
+          />
+
+          {/* Scene 7: CTA */}
+          <TransitionSeries.Sequence durationInFrames={SCENE_CTA}>
+            <SceneCTA />
+          </TransitionSeries.Sequence>
+        </TransitionSeries>
+      </AbsoluteFill>
+
+      {/* Background Music */}
+      <Audio
+        src={MUSIC_URL}
+        volume={(f) => {
+          const fadeIn = interpolate(f, [0, 30], [0, 1], {
+            extrapolateLeft: "clamp",
+            extrapolateRight: "clamp",
+          });
+          const fadeOut = interpolate(
+            f,
+            [durationInFrames - 60, durationInFrames - 10],
+            [1, 0],
+            { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+          );
+          return 0.35 * fadeIn * fadeOut;
+        }}
+        loop
+      />
+
+      {/* Whoosh SFX on intro */}
+      <Sequence from={5} layout="none">
+        <Audio src={WHOOSH_SFX} volume={0.25} />
+      </Sequence>
+
+      {/* Chime SFX on CTA scene appearance */}
+      <Sequence
+        from={
+          SCENE_HERO +
+          SCENE_PROBLEM +
+          SCENE_FEATURES +
+          SCENE_CONTENT +
+          SCENE_PUBLISH +
+          SCENE_GROWTH -
+          5 * T_DUR
+        }
+        layout="none"
+      >
+        <Audio src={CHIME_SFX} volume={0.2} />
+      </Sequence>
     </>
   );
 };
